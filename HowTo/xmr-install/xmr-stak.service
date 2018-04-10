@@ -1,0 +1,11 @@
+[Unit]
+Description=xmr-stak-miner
+After=network.target
+
+[Service]
+WorkingDirectory=/home/miner/xmr-stak
+ExecStart=/home/miner/xmr-stak/xmr-stak
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

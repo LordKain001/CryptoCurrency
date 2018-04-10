@@ -1,0 +1,11 @@
+
+sudo nano /etc/sysctl.conf
+kernel.panic = 10
+kernel.panic_on_oops = 1
+kernel.sysrq = 1
+sudo sysctl -p
+
+
+Hard Reset
+echo s > /proc/sysrq-trigger
+echo b > /proc/sysrq-trigger
