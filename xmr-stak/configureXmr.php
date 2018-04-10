@@ -12,7 +12,7 @@ shell_exec('rm pools.txt');
 
 
 $poolAdress = "pool.supportxmr.com:3333";
-$rigId = "WK_L13";
+$rigId = "Testing";
 $Walletadress = "47fWF6DkSumWrMxkpkM1vJ7ZBKrs8SaK7FJUgeVi622y5wedi39TNroQpyCFLyAF59BUGauxFeKXjXMZJiV2dU6iKoPdx2r";
 
 $pooldata = '"pool_list" :
@@ -105,5 +105,10 @@ $amdData .= '
 var_dump($amdData);
 
 file_put_contents("amd.txt", $amdData);
+
+
+passthru("./xmr-stak");
+
+
 
 ?>

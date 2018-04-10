@@ -1,11 +1,21 @@
+
 [Unit]
-Description=xmr-stak-miner
+Description=xmr-stak
 After=network.target
 
 [Service]
-WorkingDirectory=/home/miner/xmr-stak
-ExecStart=/home/miner/xmr-stak/xmr-stak
-Restart=on-failure
+User=root
+Type=simple
+TimeoutSec=0
+#Restart=on-failure
+#RestartPreventExitStatus=1
+#PrivateTmp=false
+PIDFile=/var/run/php_app_sync.pid
 
-[Install]
-WantedBy=multi-user.target
+WorkingDirectory=/home/miner/xmr-stak
+ExecStart=/bin/sh -c '/usr/bin/php -f /home/miner/xmr-stak/configureXmr.php'
+KillMode=control-group
+ExecStop=
+
+Restart=on-failure
+RestartSec=42s
