@@ -31,7 +31,7 @@ $pooldata = '"pool_list" :
 
 var_dump($pooldata);
 
-file_put_contents("./xmr-stak/pools.txt", $pooldata);
+file_put_contents("pools.txt", $pooldata);
 
 
 $gpuInfo = shell_exec('clinfo -l');
@@ -87,10 +87,10 @@ $amdData .= '
 
 var_dump($amdData);
 
-file_put_contents("./xmr-stak/amd.txt", $amdData);
+file_put_contents("amd.txt", $amdData);
 
 
- passthru("./xmr-stak/xmr-stak");
+ passthru("./xmr-stak");
 
 
 ?>

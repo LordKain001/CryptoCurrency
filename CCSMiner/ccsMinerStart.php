@@ -1,6 +1,6 @@
 <?php
 
-
+gc_enable();
 
  $descriptorspec = array(
 	   0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
@@ -8,6 +8,7 @@
 	   2 => array("file", "/tmp/error-output.txt", "a") // stderr is a file to write to
 	);
 	
+$env = array('some_option' => 'aeiou');
 	
 
 
@@ -34,7 +35,7 @@ if ($xmrStakPid == -1) {
 		"resource" => NULL,
 		);
 	
-	$xmrStakProcess["resource"] = proc_open($xmrStakProcess["process"], $xmrStakProcess["descriptorspec"], $xmrStakProcess["pipes"], $xmrStakProcess["directory"]);	
+	$xmrStakProcess["resource"] = proc_open($xmrStakProcess["process"], $xmrStakProcess["descriptorspec"], $xmrStakProcess["pipes"], $xmrStakProcess["directory"], $env );	
 	var_dump($xmrStakProcess);	
 	echo "xmr-stak Fork Succes\n";
 }
@@ -58,7 +59,7 @@ if ($minerAlivePid == -1) {
 		"pipes" => NULL,
 		"resource" => NULL,
 		);
-	$minerAliveProcess["resource"] = proc_open($minerAliveProcess["process"], $minerAliveProcess["descriptorspec"], $minerAliveProcess["pipes"], $minerAliveProcess["directory"]);	
+	$minerAliveProcess["resource"] = proc_open($minerAliveProcess["process"], $minerAliveProcess["descriptorspec"], $minerAliveProcess["pipes"], $minerAliveProcess["directory"], $env );	
 	var_dump($minerAliveProcess);	
 	echo "Miner Alive Fork Succes\n";
 }
