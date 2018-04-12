@@ -12,8 +12,8 @@ TimeoutSec=0
 #PrivateTmp=false
 PIDFile=/var/run/php_app_sync.pid
 
-WorkingDirectory=/home/miner/xmr-stak
-ExecStart=/bin/sh -c '/usr/bin/php -f /home/miner/xmr-stak/configureXmr.php'
+WorkingDirectory=/home/miner/CCSMiner
+ExecStart=/bin/sh -c '/usr/bin/php -f /home/miner/CCSMiner/ccsMinerStart.php'
 KillMode=control-group
 ExecStop=
 

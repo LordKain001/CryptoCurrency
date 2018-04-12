@@ -34,23 +34,6 @@ var_dump($pooldata);
 file_put_contents("pools.txt", $pooldata);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $gpuInfo = shell_exec('clinfo -l');
 $gpuInfo = explode("\n",$gpuInfo);
 
@@ -106,9 +89,6 @@ var_dump($amdData);
 
 file_put_contents("amd.txt", $amdData);
 
-
-passthru("./xmr-stak");
-
-
+ passthru("./xmr-stak");
 
 ?>

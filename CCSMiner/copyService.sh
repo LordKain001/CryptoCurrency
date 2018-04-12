@@ -1,0 +1,1 @@
+sudo cp ccsMiner.service /etc/systemd/system
