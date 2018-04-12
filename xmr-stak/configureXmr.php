@@ -11,7 +11,7 @@ shell_exec('rm pools.txt');
 //
 
 
-$poolAdress = "pool.supportxmr.com:3333";
+$poolAdress = "pool.supportxmr.com:7777";
 $rigId = "Testing";
 $Walletadress = "47fWF6DkSumWrMxkpkM1vJ7ZBKrs8SaK7FJUgeVi622y5wedi39TNroQpyCFLyAF59BUGauxFeKXjXMZJiV2dU6iKoPdx2r";
 
@@ -70,7 +70,7 @@ $amdData = '
 var_dump($gpuInfo);
 
 $worksize = 8;
-$intensity = $worksize * 40;
+$intensity = $worksize * 50;
 $counter = 0;
 foreach ($gpuInfo as $value) {
   $amdData .= '
