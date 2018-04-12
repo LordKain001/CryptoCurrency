@@ -1,5 +1,5 @@
 <?php
-
+sleep(5);
 $childPids = array();
 
 $pid = pcntl_fork();
