@@ -1,0 +1,1 @@
+sudo cp xmr-stak.service /etc/systemd/system
