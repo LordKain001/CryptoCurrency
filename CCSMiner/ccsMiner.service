@@ -1,6 +1,6 @@
 
 [Unit]
-Description=xmr-stak
+Description=CCSMiner
 After=network.target
 
 [Service]
