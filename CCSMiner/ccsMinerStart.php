@@ -1,4 +1,14 @@
 <?php
+
+include 'ConfigManager/ConfigManager.php';
+
+
+
+$ConfigManager = new configManager;
+var_dump($ConfigManager);
+echo "end of Configmanager";
+	delay(5);
+
 sleep(5);
 $childPids = array();
 
