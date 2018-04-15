@@ -43,7 +43,7 @@ echo "--------------------------------------------------------------------------
 	{
 		$minerName = NULL;
 	}
-	$scriptVersion = '1.0';
+	$scriptVersion = '1.1';
 
 
 	$mininglog = explode("\n",$mininglog);
