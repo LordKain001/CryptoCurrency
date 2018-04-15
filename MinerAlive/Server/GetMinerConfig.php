@@ -1,7 +1,3 @@
-<html>
-<body>
-
-
 
 <?php
  
@@ -32,8 +28,23 @@ if(!is_array($decoded)){
     throw new Exception('Received content contained invalid JSON!');
 }
  
-
-
+ //var_dump($decoded);
+ 
+if (isset($decoded["ipAdress"]))
+{
+     $ipAdress = $decoded["ipAdress"];
+}else
+{
+     $ipAdress = NULL;
+}
+if (isset($decoded["minerUid"]))
+{
+     $minerUid = $decoded["minerUid"];
+	 
+}else
+{
+     $minerUid = NULL;
+}
 
 
 
@@ -42,9 +53,8 @@ if(!is_array($decoded)){
 //--------------------------
 
 $mysqli = new mysqli("127.0.0.1", "root", "", "mineralive");
-$Timestamp = $decoded["Timestamp"];
+
 $sql ="";
- 
  
 if ($mysqli->connect_errno) {
      throw new Exception("Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
@@ -52,38 +62,59 @@ if ($mysqli->connect_errno) {
 
 
 
-//--------------------------
-//SQL-Database -- Insert into miner
-//--------------------------
 
-if (is_null($decoded['minerUid'])) {
-    $decoded['minerUid'] = "New_Miner_" .rand(0,10);
+if(is_null($minerUid))
+	 {
+		 $minerUid = "New_Miner_" . $ipAdress;
+	 }
 
-    $sql .= "INSERT INTO miner (MinerId, HostName) VALUES ('$decoded['minerUid']', '$decoded['hostName']');\n";
 
-}else
+
+
+
+$sql .= "SELECT * FROM `miner` WHERE `MinerId` = '$minerUid';\n";    
+
+if(empty(multiquerry($mysqli,$sql)))
 {
-    $sql .= "SELECT $decoded['minerUid'] FROM miner;\n";    
+	echo "create NEw Miner";
+	$sql = "";
+    $sql .= "INSERT INTO miner (MinerId) VALUES ('$minerUid');\n";
 }
 
 
 
+$walletAdress = "Test";
+$poolAdress ="Test";
 
 
-if (!$mysqli->multi_query($sql)) {
-    echo "Multi query failed: (" . $mysqli->errno . ") " . $mysqli->error;
+$data = array(
+	'minerUid' => $minerUid,
+	'walletAdress' => $walletAdress,
+	'poolAdress' => $poolAdress,
+	);
+
+//
+echo json_encode( multiquerry($mysqli,$sql));
+
+
+function multiquerry($mysqli,$sql)
+{
+	//var_dump($mysqli);
+	//var_dump($sql);
+	if (!$mysqli->multi_query($sql)) {
+		echo "Multi query failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+
+	do {
+		if ($res = $mysqli->store_result()) {
+			return $res->fetch_all(MYSQLI_ASSOC);
+			
+			$res->free();
+		}
+	} while ($mysqli->more_results() && $mysqli->next_result());
+
 }
-
-do {
-    if ($res = $mysqli->store_result()) {
-        var_dump($res->fetch_all(MYSQLI_ASSOC));
-        $res->free();
-    }
-} while ($mysqli->more_results() && $mysqli->next_result());
 
 
 
 ?>  
-
-</body>
-</html>
