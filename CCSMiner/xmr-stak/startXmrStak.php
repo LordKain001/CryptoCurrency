@@ -1,10 +1,10 @@
 <?php
-
-
+echo "Starting to configure XMR-Stak";
+ 
 shell_exec('rm amd.txt');
 shell_exec('rm pools.txt');
 
-
+echo "files deleted";
 
 //
 //----Pools---
@@ -89,6 +89,8 @@ var_dump($amdData);
 
 file_put_contents("amd.txt", $amdData);
 
+
  passthru("./xmr-stak");
+
 
 ?>
