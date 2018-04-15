@@ -1,15 +1,15 @@
 <?php
 
-include 'ConfigManager/ConfigManager.php';
+//include 'ConfigManager/ConfigManager.php';
 
 
-
+/*
 $ConfigManager = new configManager;
-var_dump($ConfigManager);
+//var_dump($ConfigManager);
 echo "end of Configmanager";
-	delay(5);
+	sleep(5);
+*/
 
-sleep(5);
 $childPids = array();
 
 $pid = pcntl_fork();

@@ -33,8 +33,8 @@ class configManager
 		}
 		
 		$this->getNewGpuInfo();	
-		$this->data['ipAdress'] = shell_exec("/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'");
-		$this->data['ipAdress'] = array_shift(preg_split("/\\r\\n|\\r|\\n/",$this->data['ipAdress']));
+		$this->data['ipAdress'] = array_shift(preg_split("/\\r\\n|\\r|\\n/",shell_exec("/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'");
+		//$this->data['ipAdress'] = array_shift(preg_split("/\\r\\n|\\r|\\n/",$this->data['ipAdress']));
 		$this->data['hostName'] = shell_exec('hostname');
 		
 		$this->getMinerConfig();
@@ -66,7 +66,7 @@ class configManager
 
 		//The JSON data.
 		$jsonData = array(
-		'hostname' => $this->data['hostName'],
+		'hostName' => $this->data['hostName'],
 		'minerUid' => $this->data['minerUid'],
 		);
 		 
@@ -83,19 +83,11 @@ class configManager
 		//Set the content type to application/json
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
 		 
-		if($result = curl_exec($ch) === false)
-		{
-			echo 'Curl-Fehler: ' . curl_error($ch);
-			$status["errors"]++;
-		}
-		else
-		{
-			echo "Operation ohne Fehler vollständig ausgeführt\n";
-			$status["sucess"]++;
-			$status["errors"] = 0;
-			
-		}
+		$result = curl_exec($ch);
+		
 		curl_close($ch);
+		
+		var_dump($result);
 		
 
 	}

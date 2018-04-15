@@ -1,19 +1,75 @@
 <?php
 echo "Starting to configure XMR-Stak";
- 
+
+$configFileName = '../config.json';
+
+if (file_exists($configFileName)) 
+{
+	$rigId = json_decode(file_get_contents($configFileName), TRUE);
+}else
+{
+	$rigId = NULL;
+}
+
+
+
+
+$ipAdress = array_shift(preg_split("/\\r\\n|\\r|\\n/",shell_exec("/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'")));
+  
 shell_exec('rm amd.txt');
 shell_exec('rm pools.txt');
 
-echo "files deleted";
+echo "files deleted\n";
 
 //
 //----Pools---
 //
+$url = 'home.ccs.at:8080/GetMinerConfig.php'; 
+//Initiate cURL.
+$ch = curl_init($url);
 
 
-$poolAdress = "pool.supportxmr.com:7777";
-$rigId = "Testing";
-$Walletadress = "47fWF6DkSumWrMxkpkM1vJ7ZBKrs8SaK7FJUgeVi622y5wedi39TNroQpyCFLyAF59BUGauxFeKXjXMZJiV2dU6iKoPdx2r";
+//The JSON data.
+$jsonData = array(
+'minerUid' => $rigId,
+'ipAdress' => $ipAdress,
+);
+ 
+//Encode the array into JSON.
+$jsonDataEncoded = json_encode($jsonData);
+//echo "--------------\n" . 'Json-Data' . $jsonDataEncoded . "\n--------------";
+ 
+//Tell cURL that we want to send a POST request.
+curl_setopt($ch, CURLOPT_POST, 1);
+ 
+//Attach our encoded JSON string to the POST fields.
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+ 
+//Set the content type to application/json
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+
+ 
+$result = json_decode(curl_exec($ch),True);
+//var_dump($result);
+$result = array_shift($result);
+var_dump($result);
+
+
+curl_close($ch);
+	
+$rigId = $result['MinerId'];
+$poolAdress = $result['PoolAdress'];
+$Walletadress = $result['WalletAdress'];
+$currency = $result['Currency'];
+
+file_put_contents($configFileName, json_encode($rigId));
+
+
+
 
 $pooldata = '"pool_list" :
 [
@@ -26,7 +82,7 @@ $pooldata = '"pool_list" :
   "tls_fingerprint" : "",
   "pool_weight" : 1 },
 ],
-"currency" : "monero7",';
+"currency" : "'.$currency.'",';
 
 
 var_dump($pooldata);

@@ -1,6 +1,6 @@
 
 <?php
-
+$configFileName = '../config.json';
 
 echo "------------------------------------------------------------------------------------------------\n";
 echo "---------------------------------------start of script------------------------------------------\n";
@@ -36,7 +36,13 @@ echo "--------------------------------------------------------------------------
 	$hostName = shell_exec('hostname');
 
 	//script Data filled by user
-	$minerName = 'CCSMiner_test';
+	if (file_exists($configFileName)) 
+	{
+		$minerName = json_decode(file_get_contents($configFileName), TRUE);
+	}else
+	{
+		$minerName = NULL;
+	}
 	$scriptVersion = '1.0';
 
 
