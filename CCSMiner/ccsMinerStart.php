@@ -17,8 +17,9 @@ if ($pid == -1) {   //fork failed. May be extreme OOM condition
 		die('pcntl_fork failed');
 	} elseif ($pid) {   //parent process                
 		$childPids[] = $pid;
+		chdir("MinerAlive");
 	} else {            //child process                
-		echo "xmr-stak Fork start $xmrStakPid \n";
+		echo "xmr-stak Fork start\n";
 		chdir("xmr-stak");
 		passthru("sudo php ./startXmrStak.php");
 		echo "xmr-stak Fork Succes\n";
@@ -38,12 +39,12 @@ if ($pid == -1) {   //fork failed. May be extreme OOM condition
 		
 	}
 */
-chdir("MinerAlive");
+
 		
 while (1) {
    
   echo "running \n";
-  passthru("sudo php ./MinerAlive.php");
+  exec("sudo php ./MinerAlive.php");
   sleep(60);
 }
 

@@ -1,5 +1,10 @@
 <?php
+
+$tries = 0;
+while(1)
+{
 echo "Starting to configure XMR-Stak";
+var_dump($tries);
 
 $configFileName = '../config.json';
 
@@ -51,23 +56,26 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-
-sleep(60);
 $result = json_decode(curl_exec($ch),True);
-//var_dump($result);
-$result = array_shift($result);
-var_dump($result);
-
-
 curl_close($ch);
-	
-$rigId = $result['MinerId'];
-$poolAdress = $result['PoolAdress'];
-$Walletadress = $result['WalletAdress'];
-$currency = $result['Currency'];
+
+
+if($tries>2)
+{
+	$poolAdress = "pool.supportxmr.com:3333";
+	$Walletadress = "47fWF6DkSumWrMxkpkM1vJ7ZBKrs8SaK7FJUgeVi622y5wedi39TNroQpyCFLyAF59BUGauxFeKXjXMZJiV2dU6iKoPdx2r";
+	$currency = "monero7";
+}else
+{
+	$result = array_shift($result);
+	var_dump($result);
+	$rigId = $result['MinerId'];
+	$poolAdress = $result['PoolAdress'];
+	$Walletadress = $result['WalletAdress'];
+	$currency = $result['Currency'];
+}
 
 file_put_contents($configFileName, json_encode($rigId));
-
 
 
 
@@ -147,6 +155,9 @@ file_put_contents("amd.txt", $amdData);
 
 
  passthru("./xmr-stak");
+ $tries++;
+ sleep(20);
+}
 
 
 ?>
