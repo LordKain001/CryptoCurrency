@@ -43,7 +43,9 @@ if ($pid == -1) {   //fork failed. May be extreme OOM condition
 		
 while (1) {
    
-  echo "running \n";
+   echo "\n------------------------------------------\n";
+ echo "---------------Allive---------------------\n";
+ echo "------------------------------------------\n";
   exec("sudo php ./MinerAlive.php");
   sleep(60);
 }

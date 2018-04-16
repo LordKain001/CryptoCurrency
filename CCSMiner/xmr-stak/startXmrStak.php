@@ -155,6 +155,9 @@ file_put_contents("amd.txt", $amdData);
 
 
  passthru("./xmr-stak");
+ echo "\n------------------------------------------\n";
+ echo "---------------xmr-stak failed------------\n";
+ echo "------------------------------------------\n";
  $tries++;
  sleep(20);
 }
