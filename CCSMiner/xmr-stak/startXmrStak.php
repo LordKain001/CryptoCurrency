@@ -52,7 +52,7 @@ curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
 
- 
+sleep(60);
 $result = json_decode(curl_exec($ch),True);
 //var_dump($result);
 $result = array_shift($result);

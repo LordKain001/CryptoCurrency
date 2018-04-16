@@ -44,7 +44,7 @@ while (1) {
    
   echo "running \n";
   passthru("sudo php ./MinerAlive.php");
-  sleep(10);
+  sleep(60);
 }
 
 ?>
