@@ -76,9 +76,12 @@ $sql .= "SELECT * FROM `miner` WHERE `MinerId` = '$minerUid';\n";
 
 if(empty(multiquerry($mysqli,$sql)))
 {
-	echo "create NEw Miner";
+	$walletAdress = "47fWF6DkSumWrMxkpkM1vJ7ZBKrs8SaK7FJUgeVi622y5wedi39TNroQpyCFLyAF59BUGauxFeKXjXMZJiV2dU6iKoPdx2r";
+	$poolAdress = "pool.supportxmr.com:3333";
+	$currency = "monero7";
+	//echo "create NEw Miner";
 	$sql = "";
-    $sql .= "INSERT INTO miner (MinerId) VALUES ('$minerUid');\n";
+    $sql .= "INSERT INTO miner (MinerId, PoolAdress, WalletAdress, Currency) VALUES ('$minerUid', '$poolAdress','$walletAdress', '$currency');\n";
 }
 
 

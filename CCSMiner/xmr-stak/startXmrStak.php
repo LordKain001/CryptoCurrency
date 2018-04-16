@@ -12,7 +12,7 @@ if (file_exists($configFileName))
 }
 
 
-
+var_dump($rigId);
 
 $ipAdress = array_shift(preg_split("/\\r\\n|\\r|\\n/",shell_exec("/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'")));
   
@@ -85,7 +85,7 @@ $pooldata = '"pool_list" :
 "currency" : "'.$currency.'",';
 
 
-var_dump($pooldata);
+//var_dump($pooldata);
 
 file_put_contents("pools.txt", $pooldata);
 
@@ -106,7 +106,7 @@ $amdData = '
 "gpu_threads_conf" : [';
 
 
-var_dump($gpuInfo);
+//var_dump($gpuInfo);
 
 $worksize = 8;
 $intensity = $worksize * 50;
@@ -141,7 +141,7 @@ $amdData .= '
 "platform_index" : 0,';
 
 
-var_dump($amdData);
+//var_dump($amdData);
 
 file_put_contents("amd.txt", $amdData);
 
