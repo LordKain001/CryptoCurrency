@@ -82,22 +82,20 @@ if(empty(multiquerry($mysqli,$sql)))
 	//echo "create NEw Miner";
 	$sql = "";
     $sql .= "INSERT INTO miner (MinerId, PoolAdress, WalletAdress, Currency) VALUES ('$minerUid', '$poolAdress','$walletAdress', '$currency');\n";
+	multiquerry($mysqli,$sql);
+}else
+{
+	echo json_encode( multiquerry($mysqli,$sql));
+	
+	exit;
 }
 
-
-
-$walletAdress = "Test";
-$poolAdress ="Test";
-
-
-$data = array(
-	'minerUid' => $minerUid,
-	'walletAdress' => $walletAdress,
-	'poolAdress' => $poolAdress,
-	);
-
-//
+$sql = "";
+$sql .= "SELECT * FROM `miner` WHERE `MinerId` = '$minerUid';\n";    
 echo json_encode( multiquerry($mysqli,$sql));
+
+
+exit;
 
 
 function multiquerry($mysqli,$sql)
