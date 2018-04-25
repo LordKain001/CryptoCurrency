@@ -85,6 +85,10 @@ $numOfGpu = count($decoded["gpuInfo"]);
 if (isset($decoded["Sensors"]))
 {
      $sensors = $decoded["Sensors"];
+	 $sensors =explode("\n",$sensors);
+	 $sensors = preg_grep("/^temp1/",$sensors);
+	 Var_dump($sensors);
+	 $sensors = implode("\n",$sensors);
 }else
 {
      $sensors = "NA";

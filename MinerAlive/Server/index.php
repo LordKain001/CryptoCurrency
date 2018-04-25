@@ -79,7 +79,9 @@ do {
 
 } while ($mysqliGpu->more_results() && $mysqliGpu->next_result());
 
-
+foreach ($sqlGpu as $value) {
+  //echo '<pre>'; var_dump($value["Temperature"]); echo '</pre>';
+}
 
 
 
