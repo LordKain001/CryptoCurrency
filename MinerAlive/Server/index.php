@@ -143,6 +143,7 @@ unset($worker);
   'TimeWithoutShare' => 'Default',
   'TimeWithoutPost' => 'Default',
   'NumOfGpu' => 'Default',
+  'HashRate24h' => '0'
    );
 
 $ProxyClients = array();
@@ -151,6 +152,7 @@ $ProxyClients = array();
 //echo '<pre>'; var_dump($Minerinfo); echo '</pre>';
 
 $totalGpus = 0;
+$totalHashrate = 0;
 //echo '<pre>'; var_dump($Workers); echo '</pre>';
 foreach($Workers["workers"] as $worker)
 {
@@ -161,6 +163,7 @@ foreach($Workers["workers"] as $worker)
   $ProxyClientsInfo["ExternalIp"] = $worker[1];
   $ProxyClientsInfo["Connected"] = $worker[2];
   $ProxyClientsInfo["TimeWithoutShare"] = $worker[7];
+  $ProxyClientsInfo["HashRate24h"] = $worker[12];
   
 
   foreach ($Minerinfo as $miner) {
@@ -213,10 +216,13 @@ $ProxyClients = orderBy($ProxyClients, 'WorkerName');
 foreach ($ProxyClients as $ProxyGpu) {
   if ($ProxyGpu["Connected"] == 1) {
     $totalGpus += (int)$ProxyGpu["NumOfGpu"];
+    $totalHashrate +=(float)$ProxyGpu["HashRate24h"];
   }
 }
  
-echo '<pre>'; echo "Number of Gpus Mining:" . $totalGpus ; echo '</pre>';
+echo '<pre>'; echo "Number of Gpus Mining:" . $totalGpus . "  Hashrate: " . $totalHashrate; echo '</pre>';
+
+
 ?>
 
 

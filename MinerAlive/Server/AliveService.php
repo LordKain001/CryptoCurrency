@@ -117,7 +117,16 @@ if (isset($decoded["hostname"]))
 {
      $hostName = "NA";
 }
-echo("hostName:". $hostName. "\r\n");  
+echo("hostName:". $hostName. "\r\n");
+
+  if (isset($decoded["uptime"]))
+{
+     $uptime = $decoded["uptime"];
+}else
+{
+     $uptime = "NA";
+}
+
 
 
 
@@ -165,7 +174,7 @@ if ($mysqli->connect_errno) {
 //--------------------------
 
 
-$sql .= "INSERT INTO miner (MinerId, IpAdress, NumOfGpu, Timestamp, HostName, ScriptVersion) VALUES ('$minerId', '$ipAdress','$numOfGpu','$Timestamp', '$hostName', '$scriptVersion') ON DUPLICATE KEY UPDATE IpAdress='$ipAdress', NumOfGpu='$numOfGpu',Timestamp='$Timestamp', HostName = '$hostName', ScriptVersion = '$scriptVersion';\n";
+$sql .= "INSERT INTO miner (MinerId, IpAdress, NumOfGpu, Timestamp, HostName, ScriptVersion, uptime) VALUES ('$minerId', '$ipAdress','$numOfGpu','$Timestamp', '$hostName', '$scriptVersion', '$uptime') ON DUPLICATE KEY UPDATE IpAdress='$ipAdress', NumOfGpu='$numOfGpu',Timestamp='$Timestamp', HostName = '$hostName', ScriptVersion = '$scriptVersion', uptime = '$uptime';\n";
 
 
 //--------------------------
