@@ -46,6 +46,10 @@ if (isset($decoded["minerUid"]))
      $minerUid = NULL;
 }
 
+if(is_null($minerUid))
+{
+ $minerUid = "New_Miner_" . $ipAdress;
+}
 
 
 //--------------------------
@@ -60,32 +64,22 @@ if ($mysqli->connect_errno) {
      throw new Exception("Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
 }
 
-
-
-
-if(is_null($minerUid))
-	 {
-		 $minerUid = "New_Miner_" . $ipAdress;
-	 }
-
-
-
-
-
 $sql .= "SELECT * FROM `miner` WHERE `MinerId` = '$minerUid';\n";    
 
+//if no entry is found, generate a new one
 if(empty(multiquerry($mysqli,$sql)))
 {
 	$walletAdress = "47fWF6DkSumWrMxkpkM1vJ7ZBKrs8SaK7FJUgeVi622y5wedi39TNroQpyCFLyAF59BUGauxFeKXjXMZJiV2dU6iKoPdx2r";
 	$poolAdress = "pool.supportxmr.com:3333";
 	$currency = "monero7";
+	$multipleIntesity = 50;
 	//echo "create NEw Miner";
 	$sql = "";
-    $sql .= "INSERT INTO miner (MinerId, PoolAdress, WalletAdress, Currency) VALUES ('$minerUid', '$poolAdress','$walletAdress', '$currency');\n";
+    $sql .= "INSERT INTO miner (MinerId, PoolAdress, WalletAdress, Currency, multipleIntesity) VALUES ('$minerUid', '$poolAdress','$walletAdress', '$currency', '$multipleIntesity');\n";
 	multiquerry($mysqli,$sql);
 }else
 {
-	echo json_encode( multiquerry($mysqli,$sql));
+	echo json_encode(multiquerry($mysqli,$sql));
 	
 	exit;
 }
