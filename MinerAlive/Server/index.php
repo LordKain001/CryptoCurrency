@@ -124,7 +124,7 @@ foreach($Workers["workers"] as &$worker)
   $lastSubmitTime = intval($worker[7]/1000);
   $timediff = $currentTime - $lastSubmitTime;
 
-  $worker[3] = "".$worker[3]."/".$worker[4]."/".$worker[5];
+  $worker["shares"] = "".$worker[3]."/".$worker[4]."/".$worker[5];
   $worker[7] = date("H:i:s",intval($timediff) );
 
   unset($worker[4]);
@@ -164,6 +164,7 @@ foreach($Workers["workers"] as $worker)
   $ProxyClientsInfo["Connected"] = $worker[2];
   $ProxyClientsInfo["TimeWithoutShare"] = $worker[7];
   $ProxyClientsInfo["HashRate24h"] = $worker[12];
+  $ProxyClientsInfo["Performance"] = $worker[3];
   
 
   foreach ($Minerinfo as $miner) {
@@ -171,6 +172,7 @@ foreach($Workers["workers"] as $worker)
       $ProxyClientsInfo["InternalIp"] = $miner["IpAdress"];
       $ProxyClientsInfo["TimeWithoutPost"] = $miner["Timestamp"];
       $ProxyClientsInfo["NumOfGpu"] = $miner["NumOfGpu"];
+
       break;
     }else{
       $ProxyClientsInfo["InternalIp"] = "No Info";
@@ -213,14 +215,30 @@ $ProxyClients = orderBy($ProxyClients, 'WorkerName');
 
 
 
+
+
+
+$totalshares = array_sum(array_column($ProxyClients, 'Performance'));
+$totalGpus = array_sum(array_column($ProxyClients, 'NumOfGpu'));
+
+foreach ($ProxyClients as &$ProxyInfo) {
+    $done = $ProxyInfo["Performance"]/$totalshares*100;
+    $target = $ProxyInfo["NumOfGpu"]/$totalGpus*100;
+    $ProxyInfo["Performance"] = round($done/$target*100) . "%";
+}
+
+
+
+$totalactiveGpus = 0;
 foreach ($ProxyClients as $ProxyGpu) {
   if ($ProxyGpu["Connected"] == 1) {
-    $totalGpus += (int)$ProxyGpu["NumOfGpu"];
+    $totalactiveGpus += (int)$ProxyGpu["NumOfGpu"];
     $totalHashrate +=(float)$ProxyGpu["HashRate24h"];
   }
 }
+unset($ProxyGpu);
  
-echo '<pre>'; echo "Number of Gpus Mining:" . $totalGpus . "  Hashrate: " . $totalHashrate; echo '</pre>';
+echo '<pre>'; echo "Number of Gpus Mining:" . $totalactiveGpus . "  Hashrate: " . $totalHashrate . "total shares: ". $totalshares; echo '</pre>';
 
 
 ?>
@@ -251,7 +269,18 @@ foreach ($ProxyClients as $row){
   </tbody>
 </table>
 
-    
+ 
+
+
+
+
+
+
+
+
+
+
+
 
 <pre> "Var_Dump" von Proxy und DB <pre>
 
