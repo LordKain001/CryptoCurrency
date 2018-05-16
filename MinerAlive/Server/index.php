@@ -81,6 +81,7 @@ do {
 
 foreach ($sqlGpu as $value) {
   //echo '<pre>'; var_dump($value["Temperature"]); echo '</pre>';
+
 }
 
 
@@ -285,7 +286,7 @@ foreach ($ProxyClients as $row){
 <pre> "Var_Dump" von Proxy und DB <pre>
 
 
-<table>
+<table style="width:100%">
   <thead>
     <tr>
       <th><?php echo implode('</th><th>', $MinerKeys); ?></th>
@@ -305,7 +306,7 @@ foreach ($ProxyClients as $row){
 
 ?>
 
-<table>
+<table style="width:100%">
   <thead>
     <tr>
       <th><?php echo implode('</th><th>', $workerinfo); ?></th>
@@ -321,24 +322,71 @@ foreach ($ProxyClients as $row){
 </table>
 
 </body>
-</html>
 
 
 
 
 
 
-<table>
+<?php
+//var_dump($sqlGpu);
+
+?>
+
+
+<table style="width:100%">
   <thead>
     <tr>
       <th><?php echo implode('</th><th>', $sqlGpuKeys); ?></th>
     </tr>
   </thead>
   <tbody>
-<?php foreach ($sqlGpu as $row): array_map('htmlentities', $row); ?>
-    <tr>
-      <td><?php echo implode('</td><td>', $row); ?></td>
-    </tr>
-<?php endforeach; ?>
+<?php 
+foreach ($sqlGpu as $row)
+{
+
+  if(json_decode($row["Temperature"]))
+  {
+    $TemperatureOutput = NULL;
+    $tempData = json_decode($row["Temperature"], JSON_PRETTY_PRINT);
+    $TemperatureOutput .= "<table>";
+      $TemperatureOutput .= "<thead>";
+        $TemperatureOutput .= "<tr>";
+          $TemperatureOutput .= "<th>";
+            $TemperatureOutput .= implode('</th><th>', array_keys($tempData));
+          $TemperatureOutput .= "</th>";
+        $TemperatureOutput .= "</tr>";
+      $TemperatureOutput .= "</thead>";
+      $TemperatureOutput .= "<tbody>";
+      $TemperatureOutput .= "<tr>";
+    foreach ($tempData as $row2)
+    {
+          //$TemperatureOutput .= array_map('htmlentities', $row);
+          $TemperatureOutput .= "<td>";
+          foreach ($row2 as $key => $value) {
+            $TemperatureOutput .= "";
+            $TemperatureOutput .= $key . " ";
+            $TemperatureOutput .= $value;
+            $TemperatureOutput .= "<br/>";
+          }
+          $TemperatureOutput .= "</td>";     
+
+    }
+       $TemperatureOutput .= "</tr>";
+       $TemperatureOutput .="</tbody>";
+      $TemperatureOutput .="</table>";
+    $row["Temperature"] = $TemperatureOutput;
+  }
+
+
+  array_map('htmlentities', $row);
+
+    echo "<td>";
+    echo implode('</td><td>', $row);
+    echo "</td>";
+      echo "</tr>";
+}
+?>
   </tbody>
 </table>
+</html>
