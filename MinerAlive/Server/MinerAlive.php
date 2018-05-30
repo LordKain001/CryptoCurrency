@@ -1,18 +1,10 @@
 
 
-
-
-
-
 <div id="dom-target" style="display: none;">
     <?php 
        include "GetData.php";
-       echo htmlspecialchars($ProxyClients);
     ?>
 </div>
-
-
-
 
 
 
@@ -57,21 +49,21 @@
               <li class="nav-item">
                 <a class="nav-link active" href="index.php">
                   <span data-feather="home"></span>
-                  Dashboard <span class="sr-only">(current)</span>
+                  Dashboard 
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="Temperature.php">
                   <span data-feather="file"></span>
-                  Temperaturen
+                  Temperaturen <span class="sr-only">(current)</span>
                 </a>
               </li>
-              <li class="nav-item">
+               <li class="nav-item">
                 <a class="nav-link" href="MinerAlive.php">
                   <span data-feather=""></span>
                   MinerAlive
                 </a>
-              </li>              
+              </li> 
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -110,49 +102,23 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Dashboard</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-              <div class="btn-group mr-2">
-                <button class="btn btn-sm btn-outline-secondary">Share</button>
-                <button class="btn btn-sm btn-outline-secondary">Export</button>
-              </div>
-              <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar"></span>
-                This week
-              </button>
-            </div>
-          </div>
-          
-          <p id="demo"></p>
-
-          <div id="piechart"></div>
-
-          <h2>Overview</h2>
+                    
+         
+          <h2>MinerAlive</h2>
           <div class="table-responsive">
             <table class="table table-striped table-sm">
-             <thead>
-                <tr>
-                  <th><?php echo implode('</th><th>', array_keys($ProxyClients[0])); ?></th>
-                </tr>
-              </thead>
-              <tbody>
-                 <?php 
-                  foreach ($ProxyClients as $row){
-                    array_map('htmlentities', $row);
-                    if ($row["Connected"] == 1) {
-                      echo '<tr>';
-                    }else{
-                      echo '<tr style="background-color:red;">';
-                    }
-                      echo "<td>";
-                      echo implode('</td><td>', $row);
-                      echo "</td>";
-                        echo "</tr>";
-                  }
-                  ?>
-                </tr>
-              </tbody>
+               <thead>
+    <tr>
+      <th><?php echo implode('</th><th>', array_keys($Minerinfo[0])); ?></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php foreach ($Minerinfo as $row): array_map('htmlentities', $row); ?>
+    <tr>
+      <td><?php echo implode('</td><td>', $row); ?></td>
+    </tr>
+<?php endforeach; ?>
+  </tbody>
             </table>
           </div>
         </main>
