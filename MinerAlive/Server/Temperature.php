@@ -3,6 +3,9 @@
 <div id="dom-target" style="display: none;">
     <?php 
        include "GetData.php";
+       $SensorData = GetTempData();
+       $ExtremeTempDataValues = GetExtremeTempData();
+
     ?>
 </div>
 
@@ -103,6 +106,9 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
           
+            
+              <div id="chartContainer" style="height: 600px; width: 100%;"></div>
+            <?php //GetTempData(); ?>
           
           <p id="demo"></p>
 
@@ -178,9 +184,9 @@ foreach ($sqlGpu as $row)
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="../../../../assets/js/vendor/popper.min.js"></script>
-    <script src="../../../../dist/js/bootstrap.min.js"></script>
+    <script>window.jQuery || document.write('<script src="Bootstrap4.1.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="Bootstrap4.1.1/assets/js/vendor/popper.min.js"></script>
+    <script src="Bootstrap4.1.1/dist/js/bootstrap.min.js"></script>
 
     <!-- Icons -->
     <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
@@ -188,76 +194,75 @@ foreach ($sqlGpu as $row)
       feather.replace()
     </script>
 
-    <!-- Graphs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-    <script>
-      var ctx = document.getElementById("myChart");
-      var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-          datasets: [{
-            data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
-            lineTension: 0,
-            backgroundColor: 'transparent',
-            borderColor: '#007bff',
-            borderWidth: 4,
-            pointBackgroundColor: '#007bff'
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: false
-              }
-            }]
-          },
-          legend: {
-            display: false,
-          }
-        }
+
+
+
+  <script type="text/javascript">
+  
+    var updateChart = function () {
+
+    var SensorData = <?php echo json_encode($SensorData); ?>;
+    var ExtremeTempDataValues = <?php echo json_encode($ExtremeTempDataValues); ?>;
+    var ymax =    parseInt(ExtremeTempDataValues["Max"])+5;                 
+    var ymin =    parseInt(ExtremeTempDataValues["Min"])-5;                 
+
+    //console.log(SensorData);
+    console.log(ExtremeTempDataValues);
+
+    var dps = [];
+    var Series = [];
+    var chart = new CanvasJS.Chart("chartContainer",{
+      zoomEnabled: true,
+      zoomType: "xy",
+
+  title :{
+    text: "Live Data"
+  },
+  axisX: {            
+    title: "Axis X Title"
+  },
+  axisY: {            
+    title: "Units",
+       maximum: ymax,
+   minimum: ymin,
+  },
+  data: Series
+});
+    
+console.log(chart);
+
+
+      Object.keys(SensorData).forEach(function(sensorId) {
+        dps[sensorId] = [];
+        Series.push({
+            type:"line",
+            xValueType: "dateTime",
+            dataPoints : dps[sensorId],
+            name : sensorId,
+            toolTipContent: "x:{x}, y: {y} <br/> name: {name}"
+          })
+          
+          Object.keys(SensorData[sensorId]).forEach(function(index) {
+            
+           dps[sensorId].push({x: parseInt(SensorData[sensorId][index]["Timestamp"]*1000),y:parseFloat(SensorData[sensorId][index]["Temperature"]) });
+            
+           });
+          
       });
-    </script>
+
+ 
+      //console.log(Series);
 
 
+  
+    chart.render();
+  }
 
+  window.onload = function(){updateChart()};
+  //setInterval(function(){updateChart()},1000);
 
-
-
-
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-<script type="text/javascript">
-// Load google charts
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-var ProxyClients = <?php echo json_encode($ProxyClients); ?>;
-
-console.log(ProxyClients);
-
-// Draw the chart and set the chart values
-function drawChart() {
-  var data = google.visualization.arrayToDataTable([
-  ['Task', 'Hours per Day'],
-  ['connected', 1],
-  ['not connected', 10],
-]);
-
-  // Optional; add a title and set the width and height of the chart
-  var options = {'title':'Miner Status', 'width':550, 'height':400};
-
-  // Display the chart inside the <div> element with id="piechart"
-  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-  chart.draw(data, options);
-}
-</script>
-
-
-
-
-
+  </script>
+ <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 
 

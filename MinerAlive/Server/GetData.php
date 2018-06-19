@@ -1,8 +1,24 @@
 <?php
 
+function multiquerry($ipAdress="", $user="", $password="", $dataBase="",$sql)
+{
+  
+  $mysqli = new mysqli($ipAdress, $user, $password, $dataBase);
+  if (!$mysqli->multi_query($sql)) {
+    echo "Multi query failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
 
+  do {
+    if ($res = $mysqli->store_result()) {
+      return $res->fetch_all(MYSQLI_ASSOC);
+      
+      $res->free();
+    }
+  } while ($mysqli->more_results() && $mysqli->next_result());
 
-function GetMySqlData($ipAdress="", $user="", $password="", $dataBase="",$table="")
+}
+
+function GetMySqlData($ipAdress="", $user="", $password="", $dataBase="",$table="",$Select="*",$Where="1")
 {
 	$mysqli = new mysqli($ipAdress, $user, $password, $dataBase);
 	$sql ="";
@@ -10,7 +26,7 @@ function GetMySqlData($ipAdress="", $user="", $password="", $dataBase="",$table=
 	{
     	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql .= "SELECT * FROM `$table` WHERE 1;\n";
+	$sql .= "SELECT $Select FROM `$table` WHERE $Where;\n";
 	
 	$sqlData = $mysqli->query($sql);
 
@@ -20,50 +36,50 @@ function GetMySqlData($ipAdress="", $user="", $password="", $dataBase="",$table=
 
 function GetProxyData($value='')
 {
-	$Workers =  trim(file_get_contents("http://localhost:8080/workers.json", False));
+  $Workers =  trim(file_get_contents("http://localhost:8080/workers.json", False));
 
-//Attempt to decode the incoming RAW post data from JSON.
-$Workers = json_decode($Workers, true);
- 
-//If json_decode failed, the JSON is invalid.
-if(!is_array($Workers)){
-    throw new Exception('Received content contained invalid JSON!');
-}
+  //Attempt to decode the incoming RAW post data from JSON.
+  $Workers = json_decode($Workers, true);
+   
+  //If json_decode failed, the JSON is invalid.
+  if(!is_array($Workers)){
+      throw new Exception('Received content contained invalid JSON!');
+  }
 
-//echo '<pre>'; var_dump($Workers["hashrate"]); echo '</pre>';
-//echo '<pre>'; var_dump($Workers["workers"]); echo '</pre>';
+  //echo '<pre>'; var_dump($Workers["hashrate"]); echo '</pre>';
+  //echo '<pre>'; var_dump($Workers["workers"]); echo '</pre>';
 
-$workerinfo = array(
-    "Worker name",
-    "ip address",
-    "Connection count",
-    "Acc/Rej/Inv shares",
-    "Total hashes",
-    "Time with no share",
-    "1 min",
-    "10 min",  
-    "1 hour",
-    "12 hours",
-    "24 hours");
+  $workerinfo = array(
+      "Worker name",
+      "ip address",
+      "Connection count",
+      "Acc/Rej/Inv shares",
+      "Total hashes",
+      "Time with no share",
+      "1 min",
+      "10 min",  
+      "1 hour",
+      "12 hours",
+      "24 hours");
 
 
-date_default_timezone_set("UTC"); 
-$currentTime = time();
+  date_default_timezone_set("UTC"); 
+  $currentTime = time();
 
-foreach($Workers["workers"] as &$worker)
-{
-  $lastSubmitTime = intval($worker[7]/1000);
-  $timediff = $currentTime - $lastSubmitTime;
+  foreach($Workers["workers"] as &$worker)
+  {
+    $lastSubmitTime = intval($worker[7]/1000);
+    $timediff = $currentTime - $lastSubmitTime;
 
-  $worker["shares"] = "".$worker[3]."/".$worker[4]."/".$worker[5];
-  $worker[7] = date("H:i:s",intval($timediff) );
+    $worker["shares"] = "".$worker[3]."/".$worker[4]."/".$worker[5];
+    $worker[7] = date("H:i:s",intval($timediff) );
 
-  unset($worker[4]);
-  unset($worker[5]);
-}
-//unset($worker);
+    unset($worker[4]);
+    unset($worker[5]);
+  }
+  //unset($worker);
 
-return $Workers;
+  return $Workers;
 }
 
 
@@ -160,9 +176,8 @@ function orderBy($data, $field)
     usort($data, create_function('$a,$b', $code));
     return $data;
   }
+
 $ProxyClients = orderBy($ProxyClients, 'WorkerName');
-
-
 
 
 $totalshares = array_sum(array_column($ProxyClients, 'Performance'));
@@ -186,5 +201,64 @@ foreach ($ProxyClients as $ProxyGpu) {
 unset($ProxyGpu);
  
 //echo '<pre>'; echo "Number of Gpus Mining:" . $totalactiveGpus . "  Hashrate: " . $totalHashrate . "total shares: ". $totalshares; echo '</pre>';
+
+
+function GetExtremeTempData()
+{
+
+  $sql = "SELECT MAX(Temperature) FROM `temperature`;\n";
+  $Temperatures["Max"] = implode(array_flatten(multiquerry("127.0.0.1", "root", "", "mineralive", $sql)));
+  $sql = "SELECT MIN(Temperature) FROM `temperature`;\n";
+  $Temperatures["Min"] = implode(array_flatten(multiquerry("127.0.0.1", "root", "", "mineralive", $sql)));
+    
+    var_dump($sql);
+  
+
+
+  return $Temperatures;
+    
+}
+
+
+function GetTempData()
+{
+  $Sensors = GetMySqlData("127.0.0.1", "root", "", "mineralive", "temperature","DISTINCT(`SensorId`)");
+  $Sensors = array_flatten($Sensors);
+
+  foreach ($Sensors as $key => $value) {
+    $sql = "SELECT `Timestamp`, `Temperature` FROM `temperature` Where `SensorId`='$value'  GROUP BY Timestamp ORDER BY Timestamp ASC;\n";
+    $Temperatures["$value"] = multiquerry("127.0.0.1", "root", "", "mineralive", $sql);
+    //foreach ($Temperatures["$value"] as &$value) {
+      //$value["Timestamp"] = date("F j, Y, g:i a",$value["Timestamp"]);
+    //}
+
+    
+    var_dump($sql);
+  }
+
+
+  return $Temperatures;
+    
+}
+
+function array_flatten(array $array)
+{
+    $flat = array(); // initialize return array
+    $stack = array_values($array); // initialize stack
+    while($stack) // process stack until done
+    {
+        $value = array_shift($stack);
+        if (is_array($value)) // a value to further process
+        {
+            $stack = array_merge(array_values($value), $stack);
+        }
+        else // a value to take
+        {
+           $flat[] = $value;
+        }
+    }
+    return $flat;
+}
+
 
 ?>
